@@ -92,11 +92,11 @@ let state = {
     brandName: "GAC MOTOR",
     selectedFont: "Wallpoet",
     printType: "both",
-    chapelonaWidth: 110,
-    chapelonaHeight: 43,
+    chapelonaWidth: 33,
+    chapelonaHeight: 30,
     autodestrutivaWidth: 80,
     autodestrutivaHeight: 25,
-    labelMargin: 4,
+    labelMargin: 2,
     pageMarginTop: 5
   }
 };
@@ -807,7 +807,10 @@ function renderOrderDetailsPage(order) {
                 <div class="form-group" style="gap: 0.25rem;">
                   <label style="font-size: 0.75rem; color: var(--text-secondary);">Fonte Stencil (Chapelonas)</label>
                   <select id="label-font-select" class="input-ctrl" style="padding: 0.45rem 0.75rem; font-size: 0.8rem; background: var(--bg-input);" onchange="updateLabelCalibration()">
-                    <option value="Wallpoet" ${state.labelConfig?.selectedFont === 'Wallpoet' ? 'selected' : ''}>KIA MOTOR Stencil (Wallpoet)</option>
+                    <option value="Wallpoet" ${state.labelConfig?.selectedFont === 'Wallpoet' ? 'selected' : ''}>KIA Stencil (Wallpoet)</option>
+                    <option value="Keania" ${state.labelConfig?.selectedFont === 'Keania' ? 'selected' : ''}>KIA Modern (Keania One)</option>
+                    <option value="Saira" ${state.labelConfig?.selectedFont === 'Saira' ? 'selected' : ''}>Industrial Solid Stencil (Saira)</option>
+                    <option value="BigShoulders" ${state.labelConfig?.selectedFont === 'BigShoulders' ? 'selected' : ''}>Condensed Punch (Big Shoulders)</option>
                     <option value="Allerta" ${state.labelConfig?.selectedFont === 'Allerta' ? 'selected' : ''}>Fita Segmentada (Allerta Stencil)</option>
                     <option value="monospace" ${state.labelConfig?.selectedFont === 'monospace' ? 'selected' : ''}>Monoespaçada Industrial</option>
                   </select>
@@ -826,18 +829,18 @@ function renderOrderDetailsPage(order) {
                   
                   <div>
                     <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
-                      <span>Largura Chapelona</span>
-                      <span id="label-cw-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaWidth || 110} mm</span>
+                      <span>Largura Chapelona (Unid)</span>
+                      <span id="label-cw-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaWidth || 33} mm</span>
                     </div>
-                    <input type="range" id="label-cw-slider" min="80" max="150" value="${state.labelConfig?.chapelonaWidth || 110}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
+                    <input type="range" id="label-cw-slider" min="20" max="100" value="${state.labelConfig?.chapelonaWidth || 33}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
                   </div>
 
                   <div>
                     <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
-                      <span>Altura Chapelona</span>
-                      <span id="label-ch-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaHeight || 43} mm</span>
+                      <span>Altura Chapelona (Unid)</span>
+                      <span id="label-ch-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaHeight || 30} mm</span>
                     </div>
-                    <input type="range" id="label-ch-slider" min="30" max="80" value="${state.labelConfig?.chapelonaHeight || 43}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
+                    <input type="range" id="label-ch-slider" min="10" max="60" value="${state.labelConfig?.chapelonaHeight || 30}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
                   </div>
 
                   <div>
@@ -1556,7 +1559,12 @@ function renderLabelPreview() {
   let html = "";
   
   // Dynamic font stack helper
-  const fontStyle = selectedFont === 'Wallpoet' ? "font-family: 'Wallpoet', sans-serif;" : selectedFont === 'Allerta' ? "font-family: 'Allerta Stencil', sans-serif;" : "font-family: monospace;";
+  const fontStyle = selectedFont === 'Wallpoet' ? "font-family: 'Wallpoet', sans-serif;" 
+                  : selectedFont === 'Keania' ? "font-family: 'Keania One', sans-serif;" 
+                  : selectedFont === 'Saira' ? "font-family: 'Saira Stencil One', sans-serif;" 
+                  : selectedFont === 'BigShoulders' ? "font-family: 'Big Shoulders Stencil Display', sans-serif; font-weight: 900;" 
+                  : selectedFont === 'Allerta' ? "font-family: 'Allerta Stencil', sans-serif;" 
+                  : "font-family: monospace;";
 
   previewChassis.forEach((ch, idx) => {
     const last8 = ch.length >= 8 ? ch.slice(-8) : ch;
@@ -1574,11 +1582,11 @@ function renderLabelPreview() {
     if ((printType === 'both' || printType === 'chapelonas') && order.selectedLabels.includes('chapelona')) {
       html += `
         <div style="margin-bottom: 16px;">
-          <div style="font-size: 0.7rem; font-weight: 800; color: #0891b2; margin-bottom: 6px; text-transform: uppercase;">Etiquetas Chapelonas (Kit com 6)</div>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; justify-items: center;">
+          <div style="font-size: 0.7rem; font-weight: 800; color: #0891b2; margin-bottom: 6px; text-transform: uppercase;">Etiquetas Chapelonas (Bobina Azul 72mm - Kit 2 Colunas x 3 Linhas)</div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; background: #2563eb; padding: 12px 10px; border-radius: 6px; border: 1px solid #1d4ed8; justify-items: center; box-shadow: inset 0 2px 8px rgba(0,0,0,0.2); width: 100%; box-sizing: border-box;">
             ${[...Array(6)].map(() => `
-              <div style="width: 100%; height: 42px; border: 1.5px dashed #3b82f6; border-radius: 3px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 2px; overflow: hidden;">
-                <span style="${fontStyle} font-size: 13px; font-weight: bold; color: #000; letter-spacing: 0.5px; text-align: center;">*${last8}*</span>
+              <div style="width: 100%; height: 38px; border: 1.5px dashed #3b82f6; border-radius: 3px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 2px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <span style="${fontStyle} font-size: 14px; font-weight: bold; color: #000; letter-spacing: 0.5px; text-align: center;">*${last8}*</span>
               </div>
             `).join("")}
           </div>
@@ -1676,7 +1684,12 @@ function printPhysicalLabels(forceType) {
   } = state.labelConfig;
 
   const activePrintType = forceType || printType;
-  const fontStyle = selectedFont === 'Wallpoet' ? "font-family: 'Wallpoet', sans-serif;" : selectedFont === 'Allerta' ? "font-family: 'Allerta Stencil', sans-serif;" : "font-family: monospace;";
+  const fontStyle = selectedFont === 'Wallpoet' ? "font-family: 'Wallpoet', sans-serif;" 
+                  : selectedFont === 'Keania' ? "font-family: 'Keania One', sans-serif;" 
+                  : selectedFont === 'Saira' ? "font-family: 'Saira Stencil One', sans-serif;" 
+                  : selectedFont === 'BigShoulders' ? "font-family: 'Big Shoulders Stencil Display', sans-serif; font-weight: 900;" 
+                  : selectedFont === 'Allerta' ? "font-family: 'Allerta Stencil', sans-serif;" 
+                  : "font-family: monospace;";
 
   let html = "";
 
@@ -1689,11 +1702,11 @@ function printPhysicalLabels(forceType) {
 
     // 1. Chapelonas (6 Unid)
     if ((activePrintType === 'both' || activePrintType === 'chapelonas') && order.selectedLabels.includes('chapelona')) {
-      html += `<div style="display: block; width: 100%; page-break-inside: avoid; break-inside: avoid;">`;
+      html += `<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: ${labelMargin}mm; width: 72mm; box-sizing: border-box; page-break-inside: avoid; break-inside: avoid; margin: 0 auto;">`;
       for (let i = 0; i < 6; i++) {
         html += `
-          <div class="print-chapelona-label" style="width: ${chapelonaWidth}mm !important; height: ${chapelonaHeight}mm !important; margin: ${labelMargin}mm !important;">
-            <span style="${fontStyle} font-size: 32px; font-weight: bold; color: #000000; letter-spacing: 3px; text-align: center; line-height: 1;">
+          <div class="print-chapelona-label" style="width: ${chapelonaWidth}mm !important; height: ${chapelonaHeight}mm !important; margin: 0 !important; box-sizing: border-box;">
+            <span style="${fontStyle} font-size: 20px; font-weight: bold; color: #000000; letter-spacing: 0.5px; text-align: center; line-height: 1;">
               *${last8}*
             </span>
           </div>
