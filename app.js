@@ -835,13 +835,29 @@ function renderOrderDetailsPage(order) {
                     <input type="range" id="label-cw-slider" min="20" max="100" value="${state.labelConfig?.chapelonaWidth || 33}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
                   </div>
 
-                  <div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
-                      <span>Altura Chapelona (Unid)</span>
-                      <span id="label-ch-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaHeight || 30} mm</span>
-                    </div>
-                    <input type="range" id="label-ch-slider" min="10" max="60" value="${state.labelConfig?.chapelonaHeight || 30}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
-                  </div>
+                   <div>
+                     <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
+                       <span>Altura Chapelona (Unid)</span>
+                       <span id="label-ch-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaHeight || 20} mm</span>
+                     </div>
+                     <input type="range" id="label-ch-slider" min="10" max="60" value="${state.labelConfig?.chapelonaHeight || 20}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
+                   </div>
+ 
+                   <div>
+                     <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
+                       <span>Tam. Fonte Chapelona</span>
+                       <span id="label-cfs-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaFontSize || 24} px</span>
+                     </div>
+                     <input type="range" id="label-cfs-slider" min="12" max="40" value="${state.labelConfig?.chapelonaFontSize || 24}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
+                   </div>
+ 
+                   <div>
+                     <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
+                       <span>Espaçamento Letras Chapelona</span>
+                       <span id="label-cls-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaLetterSpacing || 2} px</span>
+                     </div>
+                     <input type="range" id="label-cls-slider" min="0" max="8" step="0.5" value="${state.labelConfig?.chapelonaLetterSpacing || 2}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
+                   </div>
 
                   <div>
                     <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
@@ -1489,11 +1505,13 @@ function updateLabelCalibration() {
   const brand = document.getElementById("label-brand-input")?.value || "GAC MOTOR";
   const font = document.getElementById("label-font-select")?.value || "Wallpoet";
   const type = document.getElementById("label-type-select")?.value || "both";
-  const cw = parseInt(document.getElementById("label-cw-slider")?.value) || 110;
-  const ch = parseInt(document.getElementById("label-ch-slider")?.value) || 43;
+  const cw = parseInt(document.getElementById("label-cw-slider")?.value) || 33;
+  const ch = parseInt(document.getElementById("label-ch-slider")?.value) || 20;
+  const cfs = parseInt(document.getElementById("label-cfs-slider")?.value) || 24;
+  const cls = parseFloat(document.getElementById("label-cls-slider")?.value) || 2;
   const aw = parseInt(document.getElementById("label-aw-slider")?.value) || 80;
   const ah = parseInt(document.getElementById("label-ah-slider")?.value) || 25;
-  const margin = parseInt(document.getElementById("label-margin-slider")?.value) || 4;
+  const margin = parseInt(document.getElementById("label-margin-slider")?.value) || 2;
   const pageTop = parseInt(document.getElementById("label-pagetop-slider")?.value) || 5;
 
   state.labelConfig = {
@@ -1502,6 +1520,8 @@ function updateLabelCalibration() {
     printType: type,
     chapelonaWidth: cw,
     chapelonaHeight: ch,
+    chapelonaFontSize: cfs,
+    chapelonaLetterSpacing: cls,
     autodestrutivaWidth: aw,
     autodestrutivaHeight: ah,
     labelMargin: margin,
@@ -1513,6 +1533,10 @@ function updateLabelCalibration() {
   if (elCwText) elCwText.textContent = `${cw} mm`;
   const elChText = document.getElementById("label-ch-text");
   if (elChText) elChText.textContent = `${ch} mm`;
+  const elCfsText = document.getElementById("label-cfs-text");
+  if (elCfsText) elCfsText.textContent = `${cfs} px`;
+  const elClsText = document.getElementById("label-cls-text");
+  if (elClsText) elClsText.textContent = `${cls} px`;
   const elAwText = document.getElementById("label-aw-text");
   if (elAwText) elAwText.textContent = `${aw} mm`;
   const elAhText = document.getElementById("label-ah-text");
@@ -1548,6 +1572,8 @@ function renderLabelPreview() {
     printType,
     chapelonaWidth,
     chapelonaHeight,
+    chapelonaFontSize,
+    chapelonaLetterSpacing,
     autodestrutivaWidth,
     autodestrutivaHeight,
     labelMargin
@@ -1586,7 +1612,7 @@ function renderLabelPreview() {
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; background: #2563eb; padding: 12px 10px; border-radius: 6px; border: 1px solid #1d4ed8; justify-items: center; box-shadow: inset 0 2px 8px rgba(0,0,0,0.2); width: 100%; box-sizing: border-box;">
             ${[...Array(6)].map(() => `
               <div style="width: 100%; height: 38px; border: 1.5px dashed #3b82f6; border-radius: 3px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 2px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <span style="${fontStyle} font-size: 14px; font-weight: bold; color: #000; letter-spacing: 0.5px; text-align: center;">*${last8}*</span>
+                <span style="${fontStyle} font-size: ${Math.round((chapelonaFontSize || 24) * 0.65)}px; font-weight: bold; color: #000; letter-spacing: ${chapelonaLetterSpacing || 2}px; text-align: center; line-height: 1;">*${last8}*</span>
               </div>
             `).join("")}
           </div>
@@ -1677,6 +1703,8 @@ function printPhysicalLabels(forceType) {
     printType,
     chapelonaWidth,
     chapelonaHeight,
+    chapelonaFontSize,
+    chapelonaLetterSpacing,
     autodestrutivaWidth,
     autodestrutivaHeight,
     labelMargin,
@@ -1706,7 +1734,7 @@ function printPhysicalLabels(forceType) {
       for (let i = 0; i < 6; i++) {
         html += `
           <div class="print-chapelona-label" style="width: ${chapelonaWidth}mm !important; height: ${chapelonaHeight}mm !important; margin: 0 !important; box-sizing: border-box;">
-            <span style="${fontStyle} font-size: 20px; font-weight: bold; color: #000000; letter-spacing: 0.5px; text-align: center; line-height: 1;">
+            <span style="${fontStyle} font-size: ${chapelonaFontSize || 24}px; font-weight: bold; color: #000000; letter-spacing: ${chapelonaLetterSpacing || 2}px; text-align: center; line-height: 1;">
               *${last8}*
             </span>
           </div>
