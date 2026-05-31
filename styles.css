@@ -1076,7 +1076,7 @@ textarea.input-ctrl {
 
   .sidebar,
   header,
-  .main-content > div:not(.printable-area):not(#active-order-detail-wrapper),
+  .main-content > div:not(.printable-area):not(#tab-order-details),
   .no-print,
   .btn,
   .header-actions,
@@ -1089,7 +1089,7 @@ textarea.input-ctrl {
   .stats-grid,
   #step-outsource,
   #step-inhouse,
-  #active-order-detail-wrapper > div:not(.printable-area):not(#step-block-packaging):not(#step-billing) {
+  #active-order-detail-wrapper > div:not(.printable-area) {
     display: none !important;
   }
 

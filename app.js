@@ -870,10 +870,27 @@ function renderOrderDetailsPage(order) {
 
                 </div>
 
-                <button type="button" class="btn btn-primary" onclick="printPhysicalLabels()" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); border:none; box-shadow:0 4px 15px rgba(16,185,129,0.3); font-weight:700; gap:0.5rem; justify-content:center; margin-top:0.5rem;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                  IMPRIMIR ETIQUETAS DO LOTE
-                </button>
+                <div style="display:flex; flex-direction:column; gap: 0.75rem; margin-top:0.5rem;">
+                  ${order.selectedLabels.includes('chapelona') ? `
+                    <button type="button" class="btn btn-primary" onclick="printPhysicalLabels('chapelonas')" style="background:linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); border:none; box-shadow:0 4px 15px rgba(6,182,212,0.3); font-weight:700; gap:0.5rem; justify-content:center; padding: 0.75rem 1rem; flex-direction: column; align-items: center; line-height: 1.2;">
+                      <div style="display:flex; align-items:center; gap:0.5rem; font-size: 0.85rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        IMPRIMIR APENAS CHAPELONAS
+                      </div>
+                      <span style="font-size:0.62rem; font-weight:normal; opacity:0.85; text-transform:none;">Bobina 110x43mm - Material Plástico</span>
+                    </button>
+                  ` : ""}
+
+                  ${order.selectedLabels.includes('destrutiva') ? `
+                    <button type="button" class="btn btn-primary" onclick="printPhysicalLabels('autodestrutivas')" style="background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border:none; box-shadow:0 4px 15px rgba(59,130,246,0.3); font-weight:700; gap:0.5rem; justify-content:center; padding: 0.75rem 1rem; flex-direction: column; align-items: center; line-height: 1.2;">
+                      <div style="display:flex; align-items:center; gap:0.5rem; font-size: 0.85rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        IMPRIMIR APENAS DESTRUTIVAS
+                      </div>
+                      <span style="font-size:0.62rem; font-weight:normal; opacity:0.85; text-transform:none;">Bobina 80x25mm - Material Destrutível</span>
+                    </button>
+                  ` : ""}
+                </div>
 
               </div>
             ` : ""}
@@ -1605,7 +1622,7 @@ function renderLabelPreview() {
   container.innerHTML = html;
 }
 
-function printPhysicalLabels() {
+function printPhysicalLabels(forceType) {
   const order = state.orders.find(o => o.id === state.activeOrderId);
   if (!order) return;
 
@@ -1634,6 +1651,7 @@ function printPhysicalLabels() {
     pageMarginTop
   } = state.labelConfig;
 
+  const activePrintType = forceType || printType;
   const fontStyle = selectedFont === 'Wallpoet' ? "font-family: 'Wallpoet', sans-serif;" : selectedFont === 'Allerta' ? "font-family: 'Allerta Stencil', sans-serif;" : "font-family: monospace;";
 
   let html = "";
@@ -1646,7 +1664,7 @@ function printPhysicalLabels() {
     html += `<div class="print-kit-wrapper" style="padding-top: ${pageMarginTop}mm !important;">`;
 
     // 1. Chapelonas (6 Unid)
-    if ((printType === 'both' || printType === 'chapelonas') && order.selectedLabels.includes('chapelona')) {
+    if ((activePrintType === 'both' || activePrintType === 'chapelonas') && order.selectedLabels.includes('chapelona')) {
       html += `<div style="display: block; width: 100%; page-break-inside: avoid; break-inside: avoid;">`;
       for (let i = 0; i < 6; i++) {
         html += `
@@ -1661,8 +1679,8 @@ function printPhysicalLabels() {
     }
 
     // 2. Autodestrutivas (3 Unid)
-    if ((printType === 'both' || printType === 'autodestrutivas') && order.selectedLabels.includes('destrutiva')) {
-      const spacingTop = printType === 'both' ? 'margin-top: 6mm;' : '';
+    if ((activePrintType === 'both' || activePrintType === 'autodestrutivas') && order.selectedLabels.includes('destrutiva')) {
+      const spacingTop = activePrintType === 'both' ? 'margin-top: 6mm;' : '';
       html += `<div style="display: block; width: 100%; page-break-inside: avoid; break-inside: avoid; ${spacingTop}">`;
       
       // Label 1 (Topo): Last 8 + Year
