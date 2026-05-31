@@ -981,6 +981,22 @@ function renderOrderDetailsPage(order) {
                   <span><code style="font-family: monospace;">${(b.chassisEnd || "").slice(-8)}</code></span>
                 </div>
               </div>
+              
+              <div style="margin-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.75rem;">
+                <span style="font-size:0.75rem; font-weight:700; color:var(--primary); display:block; margin-bottom:0.4rem;">Chassis do Lote (Últimos 8 destacados):</span>
+                <div style="max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 4px; padding: 0.4rem 0.5rem; border: 1px solid var(--border-light); display: flex; flex-direction: column; gap: 0.25rem;">
+                  ${(b.items || []).map((ch, idx) => {
+                    const last8 = ch.length >= 8 ? ch.slice(-8) : ch;
+                    const basePart = ch.length >= 8 ? ch.slice(0, -8) : "";
+                    return `
+                      <div style="display:flex; justify-content:space-between; font-family:monospace; font-size:0.72rem; border-bottom: 1px solid rgba(255,255,255,0.02); padding-bottom: 2px; align-items:center;">
+                        <span style="color:var(--text-secondary);"><span style="color:var(--text-muted); font-size:0.65rem;">[${String(idx + 1).padStart(2, "0")}]</span> ${basePart}</span>
+                        <strong style="color:var(--primary); background:rgba(6,182,212,0.15); padding:1px 4px; border-radius:2px; font-size:0.72rem;">${last8}</strong>
+                      </div>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
             </div>
           `).join("")}
         </div>
@@ -1278,7 +1294,11 @@ function printBlockCovers() {
         </div>
 
         <div class="print-block-chassis-list">
-          ${(b.items || []).map((c, i) => `[${String(i + 1).padStart(2, "0")}] ${(c || "").slice(-8)}`).join("<br>")}
+          ${(b.items || []).map((c, i) => {
+            const last8 = c.length >= 8 ? c.slice(-8) : c;
+            const prefix = c.length >= 8 ? c.slice(0, -8) : "";
+            return `[${String(i + 1).padStart(2, "0")}] ${prefix}<strong>${last8}</strong>`;
+          }).join("<br>")}
         </div>
 
         <div style="margin-top: 3rem; font-size: 10pt; color: #666; border-top: 1px solid #ccc; padding-top: 1rem;">
