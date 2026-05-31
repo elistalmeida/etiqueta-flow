@@ -50,7 +50,7 @@ const MOCK_ORDERS = [
     },
     blocksConfig: {
       size: 50,
-      prefix: "T1",
+      prefix: "HA",
       startIndex: 0
     },
     blocks: []
@@ -74,7 +74,7 @@ const MOCK_ORDERS = [
     },
     blocksConfig: {
       size: 50,
-      prefix: "T1",
+      prefix: "HA",
       startIndex: 0
     },
     blocks: [] // Will be generated dynamically on load
@@ -338,9 +338,13 @@ function handleCreateOrder(e) {
     return;
   }
 
+  const firstChassis = chassisList[0] || "";
+  const firstLast8 = firstChassis.length >= 8 ? firstChassis.slice(-8) : firstChassis;
+  const detectedPrefix = firstLast8.length >= 2 ? firstLast8.slice(0, 2) : "T1";
+
   const blocksConfig = {
     size: 50,
-    prefix: "T1",
+    prefix: detectedPrefix,
     startIndex: 0
   };
 
