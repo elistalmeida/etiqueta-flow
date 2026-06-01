@@ -92,12 +92,15 @@ let state = {
     brandName: "GAC MOTOR",
     selectedFont: "Wallpoet",
     printType: "both",
-    chapelonaWidth: 33,
-    chapelonaHeight: 30,
+    chapelonaWidth: 112,
+    chapelonaHeight: 43,
+    chapelonaFontSize: 30,
+    chapelonaLetterSpacing: 4,
     autodestrutivaWidth: 80,
     autodestrutivaHeight: 25,
     labelMargin: 2,
-    pageMarginTop: 5
+    pageMarginTop: 5,
+    brandLogo: "GAC"
   }
 };
 
@@ -800,9 +803,19 @@ function renderOrderDetailsPage(order) {
                 <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4;">Ajuste o tamanho físico exato das fitas e envie o lote para a impressora térmica.</p>
                 
                 <div class="form-group" style="gap: 0.25rem;">
-                  <label style="font-size: 0.75rem; color: var(--text-secondary);">Nome da Montadora</label>
-                  <input type="text" id="label-brand-input" class="input-ctrl" style="padding: 0.45rem 0.75rem; font-size: 0.8rem;" value="${state.labelConfig?.brandName || 'GAC MOTOR'}" oninput="updateLabelCalibration()">
-                </div>
+                   <label style="font-size: 0.75rem; color: var(--text-secondary);">Logotipo da Montadora</label>
+                   <select id="label-logo-select" class="input-ctrl" style="padding: 0.45rem 0.75rem; font-size: 0.8rem; background: var(--bg-input);" onchange="handleBrandLogoChange()">
+                     <option value="GAC" ${state.labelConfig?.brandLogo === 'GAC' ? 'selected' : ''}>GAC MOTOR</option>
+                     <option value="BYD" ${state.labelConfig?.brandLogo === 'BYD' ? 'selected' : ''}>BYD</option>
+                     <option value="KIA" ${state.labelConfig?.brandLogo === 'KIA' ? 'selected' : ''}>KIA</option>
+                     <option value="CUSTOM" ${state.labelConfig?.brandLogo === 'CUSTOM' ? 'selected' : ''}>Personalizada (Outra)</option>
+                   </select>
+                 </div>
+ 
+                 <div id="custom-brand-wrapper" class="form-group" style="gap: 0.25rem; display: ${state.labelConfig?.brandLogo === 'CUSTOM' ? 'flex' : 'none'};">
+                   <label style="font-size: 0.75rem; color: var(--text-secondary);">Nome da Marca Customizada</label>
+                   <input type="text" id="label-brand-input" class="input-ctrl" style="padding: 0.45rem 0.75rem; font-size: 0.8rem;" value="${state.labelConfig?.brandName || 'GAC MOTOR'}" oninput="updateLabelCalibration()">
+                 </div>
 
                 <div class="form-group" style="gap: 0.25rem;">
                   <label style="font-size: 0.75rem; color: var(--text-secondary);">Fonte Stencil (Chapelonas)</label>
@@ -830,33 +843,33 @@ function renderOrderDetailsPage(order) {
                   <div>
                     <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
                       <span>Largura Chapelona (Unid)</span>
-                      <span id="label-cw-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaWidth || 33} mm</span>
+                      <span id="label-cw-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaWidth || 112} mm</span>
                     </div>
-                    <input type="range" id="label-cw-slider" min="20" max="100" value="${state.labelConfig?.chapelonaWidth || 33}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
+                    <input type="range" id="label-cw-slider" min="20" max="160" value="${state.labelConfig?.chapelonaWidth || 112}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
                   </div>
 
                    <div>
                      <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
                        <span>Altura Chapelona (Unid)</span>
-                       <span id="label-ch-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaHeight || 20} mm</span>
+                       <span id="label-ch-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaHeight || 43} mm</span>
                      </div>
-                     <input type="range" id="label-ch-slider" min="10" max="60" value="${state.labelConfig?.chapelonaHeight || 20}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
+                     <input type="range" id="label-ch-slider" min="10" max="80" value="${state.labelConfig?.chapelonaHeight || 43}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
                    </div>
  
                    <div>
                      <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
                        <span>Tam. Fonte Chapelona</span>
-                       <span id="label-cfs-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaFontSize || 24} px</span>
+                       <span id="label-cfs-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaFontSize || 30} px</span>
                      </div>
-                     <input type="range" id="label-cfs-slider" min="12" max="40" value="${state.labelConfig?.chapelonaFontSize || 24}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
+                     <input type="range" id="label-cfs-slider" min="12" max="60" value="${state.labelConfig?.chapelonaFontSize || 30}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
                    </div>
  
                    <div>
                      <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:600; margin-bottom: 0.25rem;">
                        <span>Espaçamento Letras Chapelona</span>
-                       <span id="label-cls-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaLetterSpacing || 2} px</span>
+                       <span id="label-cls-text" style="color:var(--primary); font-weight:700;">${state.labelConfig?.chapelonaLetterSpacing || 4} px</span>
                      </div>
-                     <input type="range" id="label-cls-slider" min="0" max="8" step="0.5" value="${state.labelConfig?.chapelonaLetterSpacing || 2}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
+                     <input type="range" id="label-cls-slider" min="0" max="12" step="0.5" value="${state.labelConfig?.chapelonaLetterSpacing || 4}" style="width:100%; accent-color:var(--primary);" oninput="updateLabelCalibration()">
                    </div>
 
                   <div>
@@ -1501,17 +1514,68 @@ function handleSaveSettings(e) {
 }
 
 // --- PHYSICAL THERMAL LABEL GENERATOR & PREVIEW SYSTEM ---
+function handleBrandLogoChange() {
+  const select = document.getElementById("label-logo-select");
+  const wrapper = document.getElementById("custom-brand-wrapper");
+  if (select && wrapper) {
+    wrapper.style.display = select.value === "CUSTOM" ? "flex" : "none";
+  }
+  updateLabelCalibration();
+}
+
+function renderAutomakerLogoSVG(logoType) {
+  if (logoType === "BYD") {
+    return `
+      <svg viewBox="0 0 100 60" width="38" height="23" style="display: block;">
+        <rect x="5" y="10" width="90" height="40" rx="20" fill="none" stroke="#244b7a" stroke-width="5" />
+        <path d="M 28 22 C 34 22 36 25 36 29 C 36 32 34 34 30 34 L 28 34 M 28 34 C 35 34 38 36 38 41 C 38 45 34 46 28 46 L 20 46 L 20 22 L 28 22" fill="none" stroke="#244b7a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 45 22 L 53 34 L 61 22 M 53 34 L 53 46" fill="none" stroke="#244b7a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M 68 22 C 78 22 84 27 84 34 C 84 41 78 46 68 46 L 68 22 Z" fill="none" stroke="#244b7a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `;
+  } else if (logoType === "KIA") {
+    return `
+      <svg viewBox="0 0 100 60" width="38" height="23" style="display: block;">
+        <path d="M 15 46 L 30 22 L 45 46 L 45 22 M 55 22 L 55 46 M 65 46 L 80 22 L 95 46" fill="none" stroke="#244b7a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `;
+  } else if (logoType === "GAC") {
+    return `
+      <svg viewBox="0 0 100 60" width="38" height="23" style="display: block;">
+        <ellipse cx="50" cy="30" rx="36" ry="24" fill="none" stroke="#244b7a" stroke-width="5" />
+        <path d="M 34 30 Q 34 18 50 18 C 62 18 64 26 64 26 L 52 28 Q 50 24 45 24 Q 40 24 40 32 Q 40 40 46 40 C 52 40 54 34 54 34 L 46 34" fill="none" stroke="#244b7a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    `;
+  } else {
+    return `
+      <svg viewBox="0 0 100 60" width="38" height="23" style="display: block;">
+        <rect x="10" y="10" width="80" height="40" rx="8" fill="none" stroke="#244b7a" stroke-width="5" />
+        <line x1="25" y1="30" x2="75" y2="30" stroke="#244b7a" stroke-width="5" stroke-linecap="round" />
+      </svg>
+    `;
+  }
+}
+
 function updateLabelCalibration() {
-  const brand = document.getElementById("label-brand-input")?.value || "GAC MOTOR";
+  const logo = document.getElementById("label-logo-select")?.value || "GAC";
+  let brand = "GAC MOTOR";
+  if (logo === "CUSTOM") {
+    brand = document.getElementById("label-brand-input")?.value || "OUTRA";
+  } else if (logo === "BYD") {
+    brand = "BYD";
+  } else if (logo === "KIA") {
+    brand = "KIA";
+  }
+
   const font = document.getElementById("label-font-select")?.value || "Wallpoet";
   const type = document.getElementById("label-type-select")?.value || "both";
-  const cw = parseInt(document.getElementById("label-cw-slider")?.value) || 33;
-  const ch = parseInt(document.getElementById("label-ch-slider")?.value) || 20;
+  const cw = parseInt(document.getElementById("label-cw-slider")?.value) || 56;
+  const ch = parseInt(document.getElementById("label-ch-slider")?.value) || 14;
   const cfs = parseInt(document.getElementById("label-cfs-slider")?.value) || 24;
   const cls = parseFloat(document.getElementById("label-cls-slider")?.value) || 2;
   const aw = parseInt(document.getElementById("label-aw-slider")?.value) || 80;
   const ah = parseInt(document.getElementById("label-ah-slider")?.value) || 25;
-  const margin = parseInt(document.getElementById("label-margin-slider")?.value) || 2;
+  const margin = parseInt(document.getElementById("label-margin-slider")?.value) || 0;
   const pageTop = parseInt(document.getElementById("label-pagetop-slider")?.value) || 5;
 
   state.labelConfig = {
@@ -1525,7 +1589,8 @@ function updateLabelCalibration() {
     autodestrutivaWidth: aw,
     autodestrutivaHeight: ah,
     labelMargin: margin,
-    pageMarginTop: pageTop
+    pageMarginTop: pageTop,
+    brandLogo: logo
   };
 
   // Update dynamic values text on screen
@@ -1576,7 +1641,8 @@ function renderLabelPreview() {
     chapelonaLetterSpacing,
     autodestrutivaWidth,
     autodestrutivaHeight,
-    labelMargin
+    labelMargin,
+    brandLogo
   } = state.labelConfig;
 
   // Limit on-screen preview to first 2 chassis for extreme snappiness
@@ -1606,15 +1672,24 @@ function renderLabelPreview() {
 
     // 1. Chapelonas
     if ((printType === 'both' || printType === 'chapelonas') && order.selectedLabels.includes('chapelona')) {
+      const labelW = chapelonaWidth || 112;
+      const labelH = chapelonaHeight || 43;
+      const marginVal = labelMargin || 0;
+      
+      const gridW = labelW * 2 + marginVal;
+      const gridH = labelH * 3 + marginVal * 2;
+
       html += `
         <div style="margin-bottom: 16px;">
-          <div style="font-size: 0.7rem; font-weight: 800; color: #0891b2; margin-bottom: 6px; text-transform: uppercase;">Etiquetas Chapelonas (Bobina Azul 72mm - Kit 2 Colunas x 3 Linhas)</div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; background: #2563eb; padding: 12px 10px; border-radius: 6px; border: 1px solid #1d4ed8; justify-items: center; box-shadow: inset 0 2px 8px rgba(0,0,0,0.2); width: 100%; box-sizing: border-box;">
-            ${[...Array(6)].map(() => `
-              <div style="width: 100%; height: 38px; border: 1.5px dashed #3b82f6; border-radius: 3px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 2px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <span style="${fontStyle} font-size: ${Math.round((chapelonaFontSize || 24) * 0.65)}px; font-weight: bold; color: #000; letter-spacing: ${chapelonaLetterSpacing || 2}px; text-align: center; line-height: 1;">*${last8}*</span>
-              </div>
-            `).join("")}
+          <div style="font-size: 0.7rem; font-weight: 800; color: #0891b2; margin-bottom: 6px; text-transform: uppercase;">Etiquetas Chapelonas (Kit 2 Colunas x 3 Linhas — Proporção de 11.2 x 4.3 cm)</div>
+          <div style="width: 100%; min-height: 180px; background: #1d4ed8; border-radius: 6px; border: 1.5px solid #1e40af; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 16px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.3); overflow: auto;">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: ${marginVal}px; width: ${gridW}px; height: ${gridH}px; justify-content: center; align-content: center;">
+              ${[...Array(6)].map(() => `
+                <div style="width: ${labelW}px; height: ${labelH}px; border: 1.5px dashed #3b82f6; border-radius: 3px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 2px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                  <span style="${fontStyle} font-size: ${Math.round((chapelonaFontSize || 30) * 0.65)}px; font-weight: bold; color: #000; letter-spacing: ${chapelonaLetterSpacing || 4}px; text-align: center; line-height: 1; white-space: nowrap;">*${last8}*</span>
+                </div>
+              `).join("")}
+            </div>
           </div>
         </div>
       `;
@@ -1629,35 +1704,35 @@ function renderLabelPreview() {
             
             <!-- Label 1: Top (8 + Year) -->
             <div style="width: 120px; height: 36px; border: 1.5px solid #244b7a; border-radius: 5px; background: #ffffff; display: flex; flex-direction: row; align-items: center; justify-content: space-between; box-sizing: border-box; overflow: hidden;">
-              <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 4px; font-weight: 900; color: #244b7a; border-right: 1px solid rgba(36, 75, 122, 0.3); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 2px; background: rgba(36, 75, 122, 0.05); flex-shrink: 0;">GAC</div>
+              <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 4.5px; font-weight: 900; color: #244b7a; border-right: 1px solid rgba(36, 75, 122, 0.3); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 2px; background: rgba(36, 75, 122, 0.05); flex-shrink: 0; white-space: nowrap;">${brandName}</div>
               <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; gap: 0px;">
                 <span style="${fontStyle} font-size: 9px; font-weight: bold; color: #000;">${last8}</span>
                 <span style="font-family: 'Ubuntu Mono', monospace; font-size: 6px; font-weight: bold; color: #475569;">*${year}*</span>
               </div>
               <div style="display: flex; align-items: center; justify-content: center; padding: 0 2px; border-left: 1px solid rgba(36, 75, 122, 0.3); height: 100%; flex-shrink: 0;">
-                <svg viewBox="0 0 100 60" width="16" height="10"><ellipse cx="50" cy="30" rx="36" ry="24" fill="none" stroke="#244b7a" stroke-width="6" /><path d="M 34 30 Q 34 18 50 18 C 62 18 64 26 64 26 L 52 28 Q 50 24 45 24 Q 40 24 40 32 Q 40 40 46 40 C 52 40 54 34 54 34 L 46 34" fill="none" stroke="#244b7a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                ${renderAutomakerLogoSVG(brandLogo, 20, 12)}
               </div>
             </div>
 
             <!-- Label 2: Middle (8 only) -->
             <div style="width: 120px; height: 36px; border: 1.5px solid #244b7a; border-radius: 5px; background: #ffffff; display: flex; flex-direction: row; align-items: center; justify-content: space-between; box-sizing: border-box; overflow: hidden;">
-              <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 4px; font-weight: 900; color: #244b7a; border-right: 1px solid rgba(36, 75, 122, 0.3); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 2px; background: rgba(36, 75, 122, 0.05); flex-shrink: 0;">GAC</div>
+              <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 4.5px; font-weight: 900; color: #244b7a; border-right: 1px solid rgba(36, 75, 122, 0.3); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 2px; background: rgba(36, 75, 122, 0.05); flex-shrink: 0; white-space: nowrap;">${brandName}</div>
               <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2px;">
                 <span style="${fontStyle} font-size: 10px; font-weight: bold; color: #000;">${last8}</span>
               </div>
               <div style="display: flex; align-items: center; justify-content: center; padding: 0 2px; border-left: 1px solid rgba(36, 75, 122, 0.3); height: 100%; flex-shrink: 0;">
-                <svg viewBox="0 0 100 60" width="16" height="10"><ellipse cx="50" cy="30" rx="36" ry="24" fill="none" stroke="#244b7a" stroke-width="6" /><path d="M 34 30 Q 34 18 50 18 C 62 18 64 26 64 26 L 52 28 Q 50 24 45 24 Q 40 24 40 32 Q 40 40 46 40 C 52 40 54 34 54 34 L 46 34" fill="none" stroke="#244b7a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                ${renderAutomakerLogoSVG(brandLogo, 20, 12)}
               </div>
             </div>
 
             <!-- Label 3: Bottom (Full 17) -->
             <div style="width: 120px; height: 36px; border: 1.5px solid #244b7a; border-radius: 5px; background: #ffffff; display: flex; flex-direction: row; align-items: center; justify-content: space-between; box-sizing: border-box; overflow: hidden;">
-              <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 4px; font-weight: 900; color: #244b7a; border-right: 1px solid rgba(36, 75, 122, 0.3); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 2px; background: rgba(36, 75, 122, 0.05); flex-shrink: 0;">GAC</div>
+              <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 4.5px; font-weight: 900; color: #244b7a; border-right: 1px solid rgba(36, 75, 122, 0.3); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 2px; background: rgba(36, 75, 122, 0.05); flex-shrink: 0; white-space: nowrap;">${brandName}</div>
               <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2px; overflow: hidden;">
                 <span style="font-family: 'Ubuntu Mono', monospace; font-size: 5px; font-weight: bold; color: #000; letter-spacing: 0px; white-space: nowrap;">${ch}</span>
               </div>
               <div style="display: flex; align-items: center; justify-content: center; padding: 0 2px; border-left: 1px solid rgba(36, 75, 122, 0.3); height: 100%; flex-shrink: 0;">
-                <svg viewBox="0 0 100 60" width="16" height="10"><ellipse cx="50" cy="30" rx="36" ry="24" fill="none" stroke="#244b7a" stroke-width="6" /><path d="M 34 30 Q 34 18 50 18 C 62 18 64 26 64 26 L 52 28 Q 50 24 45 24 Q 40 24 40 32 Q 40 40 46 40 C 52 40 54 34 54 34 L 46 34" fill="none" stroke="#244b7a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                ${renderAutomakerLogoSVG(brandLogo, 20, 12)}
               </div>
             </div>
 
@@ -1708,7 +1783,8 @@ function printPhysicalLabels(forceType) {
     autodestrutivaWidth,
     autodestrutivaHeight,
     labelMargin,
-    pageMarginTop
+    pageMarginTop,
+    brandLogo
   } = state.labelConfig;
 
   const activePrintType = forceType || printType;
@@ -1730,11 +1806,12 @@ function printPhysicalLabels(forceType) {
 
     // 1. Chapelonas (6 Unid)
     if ((activePrintType === 'both' || activePrintType === 'chapelonas') && order.selectedLabels.includes('chapelona')) {
-      html += `<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: ${labelMargin}mm; width: 72mm; box-sizing: border-box; page-break-inside: avoid; break-inside: avoid; margin: 0 auto;">`;
+      const gridWidth = chapelonaWidth * 2 + labelMargin;
+      html += `<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: ${labelMargin}mm; width: ${gridWidth}mm !important; box-sizing: border-box; page-break-inside: avoid; break-inside: avoid; margin: 0 auto;">`;
       for (let i = 0; i < 6; i++) {
         html += `
           <div class="print-chapelona-label" style="width: ${chapelonaWidth}mm !important; height: ${chapelonaHeight}mm !important; margin: 0 !important; box-sizing: border-box;">
-            <span style="${fontStyle} font-size: ${chapelonaFontSize || 24}px; font-weight: bold; color: #000000; letter-spacing: ${chapelonaLetterSpacing || 2}px; text-align: center; line-height: 1;">
+            <span style="${fontStyle} font-size: ${chapelonaFontSize || 30}px; font-weight: bold; color: #000000; letter-spacing: ${chapelonaLetterSpacing || 4}px; text-align: center; line-height: 1;">
               *${last8}*
             </span>
           </div>
@@ -1752,7 +1829,7 @@ function printPhysicalLabels(forceType) {
       html += `
         <div class="print-autodestrutiva-label" style="width: ${autodestrutivaWidth}mm !important; height: ${autodestrutivaHeight}mm !important; margin: ${labelMargin}mm !important;">
           <!-- Brand vertical -->
-          <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 9px; font-weight: 900; color: #244b7a; letter-spacing: 1px; border-right: 1px solid rgba(36, 75, 122, 0.4); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 4px; flex-shrink: 0; background: rgba(36, 75, 122, 0.03);">
+          <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 9px; font-weight: 900; color: #244b7a; letter-spacing: 1px; border-right: 1px solid rgba(36, 75, 122, 0.4); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 4px; flex-shrink: 0; background: rgba(36, 75, 122, 0.03); white-space: nowrap;">
             ${brandName}
           </div>
           <!-- Chassis Texts -->
@@ -1762,10 +1839,7 @@ function printPhysicalLabels(forceType) {
           </div>
           <!-- Right Logo -->
           <div style="display: flex; align-items: center; justify-content: center; padding: 0 6px; border-left: 1px solid rgba(36, 75, 122, 0.4); height: 100%; flex-shrink: 0;">
-            <svg viewBox="0 0 100 60" width="38" height="23" style="display: block;">
-              <ellipse cx="50" cy="30" rx="36" ry="24" fill="none" stroke="#244b7a" stroke-width="5" />
-              <path d="M 34 30 Q 34 18 50 18 C 62 18 64 26 64 26 L 52 28 Q 50 24 45 24 Q 40 24 40 32 Q 40 40 46 40 C 52 40 54 34 54 34 L 46 34" fill="none" stroke="#244b7a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+            ${renderAutomakerLogoSVG(brandLogo)}
           </div>
         </div>
       `;
@@ -1773,17 +1847,14 @@ function printPhysicalLabels(forceType) {
       // Label 2 (Meio): Last 8 only
       html += `
         <div class="print-autodestrutiva-label" style="width: ${autodestrutivaWidth}mm !important; height: ${autodestrutivaHeight}mm !important; margin: ${labelMargin}mm !important;">
-          <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 9px; font-weight: 900; color: #244b7a; letter-spacing: 1px; border-right: 1px solid rgba(36, 75, 122, 0.4); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 4px; flex-shrink: 0; background: rgba(36, 75, 122, 0.03);">
+          <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 9px; font-weight: 900; color: #244b7a; letter-spacing: 1px; border-right: 1px solid rgba(36, 75, 122, 0.4); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 4px; flex-shrink: 0; background: rgba(36, 75, 122, 0.03); white-space: nowrap;">
             ${brandName}
           </div>
           <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2px; text-align: center;">
             <span style="${fontStyle} font-size: 22px; font-weight: bold; color: #000000; line-height: 1;">${last8}</span>
           </div>
           <div style="display: flex; align-items: center; justify-content: center; padding: 0 6px; border-left: 1px solid rgba(36, 75, 122, 0.4); height: 100%; flex-shrink: 0;">
-            <svg viewBox="0 0 100 60" width="38" height="23" style="display: block;">
-              <ellipse cx="50" cy="30" rx="36" ry="24" fill="none" stroke="#244b7a" stroke-width="5" />
-              <path d="M 34 30 Q 34 18 50 18 C 62 18 64 26 64 26 L 52 28 Q 50 24 45 24 Q 40 24 40 32 Q 40 40 46 40 C 52 40 54 34 54 34 L 46 34" fill="none" stroke="#244b7a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+            ${renderAutomakerLogoSVG(brandLogo)}
           </div>
         </div>
       `;
@@ -1791,17 +1862,14 @@ function printPhysicalLabels(forceType) {
       // Label 3 (Base): Full 17
       html += `
         <div class="print-autodestrutiva-label" style="width: ${autodestrutivaWidth}mm !important; height: ${autodestrutivaHeight}mm !important; margin: ${labelMargin}mm !important;">
-          <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 9px; font-weight: 900; color: #244b7a; letter-spacing: 1px; border-right: 1px solid rgba(36, 75, 122, 0.4); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 4px; flex-shrink: 0; background: rgba(36, 75, 122, 0.03);">
+          <div style="writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase; font-size: 9px; font-weight: 900; color: #244b7a; letter-spacing: 1px; border-right: 1px solid rgba(36, 75, 122, 0.4); height: 100%; display: flex; align-items: center; justify-content: center; padding: 0 4px; flex-shrink: 0; background: rgba(36, 75, 122, 0.03); white-space: nowrap;">
             ${brandName}
           </div>
           <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2px; text-align: center; overflow: hidden;">
             <span style="font-family: 'Ubuntu Mono', monospace; font-size: 12px; font-weight: bold; color: #000000; letter-spacing: 0.2px; white-space: nowrap;">${ch}</span>
           </div>
           <div style="display: flex; align-items: center; justify-content: center; padding: 0 6px; border-left: 1px solid rgba(36, 75, 122, 0.4); height: 100%; flex-shrink: 0;">
-            <svg viewBox="0 0 100 60" width="38" height="23" style="display: block;">
-              <ellipse cx="50" cy="30" rx="36" ry="24" fill="none" stroke="#244b7a" stroke-width="5" />
-              <path d="M 34 30 Q 34 18 50 18 C 62 18 64 26 64 26 L 52 28 Q 50 24 45 24 Q 40 24 40 32 Q 40 40 46 40 C 52 40 54 34 54 34 L 46 34" fill="none" stroke="#244b7a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+            ${renderAutomakerLogoSVG(brandLogo)}
           </div>
         </div>
       `;
