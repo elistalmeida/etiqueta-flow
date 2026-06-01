@@ -9,7 +9,7 @@ const DEFAULT_SETTINGS = {
     garantia: 5.00
   },
   company: {
-    name: "ETIQUETAS ELEVA LTDA",
+    name: "ELEVA ELETIQUETAS LTDA",
     cnpj: "12.345.678/0001-90",
     phone: "(27) 3345-6789",
     address: "Av. Automotiva, 1000, Distrito Industrial - Serra - ES"
@@ -1419,7 +1419,7 @@ function printBlockCovers() {
         </div>
 
         <div style="margin-top: 3rem; font-size: 10pt; color: #666; border-top: 1px solid #ccc; padding-top: 1rem;">
-          Gerado automaticamente via Etiquetas Eleva em ${formatDate(new Date()).split(" ")[0]}
+          Gerado automaticamente via Eleva Eletiquetas em ${formatDate(new Date()).split(" ")[0]}
         </div>
       </div>
     `;
