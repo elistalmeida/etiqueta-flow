@@ -9,7 +9,7 @@ const DEFAULT_SETTINGS = {
     garantia: 5.00
   },
   company: {
-    name: "AUTOETIQUETAS DO BRASIL LTDA",
+    name: "ETIQUETAS ELEVA LTDA",
     cnpj: "12.345.678/0001-90",
     phone: "(27) 3345-6789",
     address: "Av. Automotiva, 1000, Distrito Industrial - Serra - ES"
@@ -88,6 +88,7 @@ let state = {
   activeTab: "dashboard",
   activeOrderId: null,
   activeStep: "outsource",
+  clients: [],
   labelConfig: {
     brandName: "GAC MOTOR",
     selectedFont: "Wallpoet",
@@ -114,6 +115,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // --- LOAD & SAVE DATA ---
+const DEFAULT_CLIENTS = [
+  "Trading VIX Logistics",
+  "BYD Auto Brasil (Camaçari)",
+  "Kia Motors do Brasil",
+  "Stellantis Betim (Fiat)",
+  "General Motors São Caetano",
+  "Volkswagen São Bernardo",
+  "Toyota Sorocaba"
+];
+
 function loadData() {
   // Load settings
   const savedSettings = localStorage.getItem("ef_settings");
@@ -138,12 +149,80 @@ function loadData() {
     });
     localStorage.setItem("ef_orders", JSON.stringify(state.orders));
   }
+
+  // Load clients
+  const savedClients = localStorage.getItem("ef_clients");
+  if (savedClients) {
+    state.clients = JSON.parse(savedClients);
+  } else {
+    state.clients = DEFAULT_CLIENTS;
+    localStorage.setItem("ef_clients", JSON.stringify(DEFAULT_CLIENTS));
+  }
+
+  // Populate select dropdown
+  populateClientsSelect();
 }
 
 function saveData() {
   localStorage.setItem("ef_orders", JSON.stringify(state.orders));
   localStorage.setItem("ef_settings", JSON.stringify(state.settings));
+  localStorage.setItem("ef_clients", JSON.stringify(state.clients));
   updateDashboardStats();
+}
+
+function populateClientsSelect(selectedVal = "") {
+  const select = document.getElementById("client-name");
+  if (!select) return;
+
+  let html = `<option value="" disabled ${!selectedVal ? 'selected' : ''}>Selecione um cliente...</option>`;
+  state.clients.forEach(c => {
+    html += `<option value="${c}" ${selectedVal === c ? 'selected' : ''}>${c}</option>`;
+  });
+  
+  select.innerHTML = html;
+}
+
+function toggleNewClientInput() {
+  const inlineForm = document.getElementById("new-client-form-inline");
+  const input = document.getElementById("new-client-name-input");
+  if (!inlineForm) return;
+  
+  if (inlineForm.style.display === "none") {
+    inlineForm.style.display = "flex";
+    if (input) {
+      input.value = "";
+      setTimeout(() => input.focus(), 50);
+    }
+  } else {
+    inlineForm.style.display = "none";
+    if (input) input.value = "";
+  }
+}
+
+function handleCreateNewClient() {
+  const input = document.getElementById("new-client-name-input");
+  if (!input) return;
+
+  const clientName = input.value.trim();
+  if (!clientName) {
+    alert("Por favor, digite um nome de cliente válido!");
+    return;
+  }
+
+  if (state.clients.includes(clientName)) {
+    alert("Este cliente já está cadastrado!");
+    return;
+  }
+
+  // Add to state and save
+  state.clients.push(clientName);
+  localStorage.setItem("ef_clients", JSON.stringify(state.clients));
+
+  // Populate dropdown and select new client
+  populateClientsSelect(clientName);
+
+  // Hide inline form
+  toggleNewClientInput();
 }
 
 // --- EVENT LISTENERS ---
@@ -199,6 +278,8 @@ function switchTab(tabId) {
     renderFullOrdersList();
   } else if (tabId === "settings") {
     populateSettingsForm();
+  } else if (tabId === "new-order") {
+    populateClientsSelect();
   }
 }
 
@@ -1338,7 +1419,7 @@ function printBlockCovers() {
         </div>
 
         <div style="margin-top: 3rem; font-size: 10pt; color: #666; border-top: 1px solid #ccc; padding-top: 1rem;">
-          Gerado automaticamente via EtiquetaFlow em ${formatDate(new Date()).split(" ")[0]}
+          Gerado automaticamente via Etiquetas Eleva em ${formatDate(new Date()).split(" ")[0]}
         </div>
       </div>
     `;
